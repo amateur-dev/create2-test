@@ -1,7 +1,5 @@
 require("@nomiclabs/hardhat-ethers");
 require("dotenv").config();
-const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
-const { task } = require("hardhat/config");
 const {
   API_URL_URL1,
   API_URL_URL2,
