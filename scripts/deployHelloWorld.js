@@ -1,16 +1,21 @@
 const { ethers } = require("hardhat");
+const fs = require('fs/promises');
 
 const main = async () => {
   const Factory = await ethers.getContractFactory("DeterministicDeployFactory");
-  const factory = await Factory.attach("0x40c6B76309a23fD3A9eE1E61469d45b3961e4Bf0");
+  const factoryAddress = (JSON.parse(await fs.readFile('./addresses/address.json'))).factory;
+  console.log("factoryAddress", factoryAddress);
+  const factory = await Factory.attach(factoryAddress);
   const HW = await ethers.getContractFactory("HelloWorld");
   const byteCode = HW.bytecode;
 
-  const create2Tx = await factory.deployUsingCreate2(byteCode,"buildbear");
-  factory.once("Deploy", (address) => {
-    console.log(address);
+  await factory.deployUsingCreate2(byteCode,"buildbear");
+  factory.once("Deploy", async (address) => {
+    const helloWorldContract = HW.attach(address);
+    const greeting = await helloWorldContract.greeting();
+    console.log(greeting);
   })
-
+  
 }
 
 main().catch((error) => {
