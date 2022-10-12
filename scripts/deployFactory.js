@@ -1,11 +1,15 @@
 const { ethers } = require("hardhat");
+const fs = require('fs/promises');
 
 const main = async () => {
   const Factory = await ethers.getContractFactory("DeterministicDeployFactory");
   const factory = await Factory.deploy();
   await factory.deployed();
   const factoryAddress = factory.address
-  console.log("Factory deployed to:", factoryAddress);
+  const addressObject = {
+    factory: factoryAddress
+  }
+  await fs.writeFile('./addresses/address.json', JSON.stringify(addressObject));
 }
 
 main().catch((error) => {
